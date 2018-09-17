@@ -1,6 +1,7 @@
 package com.bry.petfood.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -20,8 +21,10 @@ import android.widget.Toast;
 import com.bry.petfood.Adapters.FoodItemCard;
 import com.bry.petfood.Models.FoodItem;
 import com.bry.petfood.R;
+import com.crashlytics.android.Crashlytics;
 import com.mindorks.placeholderview.PlaceHolderView;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +38,12 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.logoutBtn) ImageButton mLogoutBtn;
     @Bind(R.id.settingsBtn) ImageButton mSettingsBtn;
     @Bind(R.id.cartBtn) ImageButton mCartBtn;
+
     @Bind(R.id.checkoutBtn) ImageButton mCheckoutBtn;
 
     @Bind(R.id.searchFoodLayout) LinearLayout mSearchFoodLayout;
     @Bind(R.id.searchFoodCard) CardView mSearchFoodCard;
+
     @Bind(R.id.searchIcon) ImageButton mSearchIcon;
     @Bind(R.id.searchEditText) AutoCompleteTextView searchEditText;
     @Bind(R.id.listViewIcon) ImageButton listViewIcon;
@@ -52,14 +57,42 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         mContext = getApplicationContext();
 
         loadTestItems();
         seTopSearchBarStuff();
-
+        setListeners();
     }
+
+    private void setListeners() {
+        mCheckoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,CartActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mSettingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+        mLogoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,Login.class);
+                startActivity(intent);
+            }
+        });
+    }
+
 
     private void seTopSearchBarStuff() {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.select_dialog_item, COUNTRIES);
