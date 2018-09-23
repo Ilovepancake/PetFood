@@ -23,5 +23,5 @@
     <string name="connectToInternet">"You need an internet connection…"</string>
     <string name="noInternetForLoadAds">You need an internet connection to load the ads.</string>
     <string name="settingUpMessage2">Setting up...</string>
-    <string name="signUpPasswordNote">Note...</string>
+    <string name="signUpPasswordNote">Note: put a secure password that you can remember.</string>
 </resources>

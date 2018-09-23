@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.bry.petfood.R;
+import com.bry.petfood.Services.SharedPreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Splash extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,18 +21,27 @@ public class Splash extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     if(FirebaseAuth.getInstance().getCurrentUser().getUid() == null){
-                        Intent intent = new Intent(Splash.this,Login.class);
-                        startActivity(intent);
+                        startLoginOrSignUp();
                     }else{
-                        Intent intent = new Intent(Splash.this,MainActivity.class);
+                        Intent intent = new Intent(SplashActivity.this,MainActivity.class);
                         startActivity(intent);
                     }
                 }catch (Exception e){
                     e.printStackTrace();
-                    Intent intent = new Intent(Splash.this,Login.class);
-                    startActivity(intent);
+                    startLoginOrSignUp();
                 }
             }
         });
+    }
+
+    private void startLoginOrSignUp(){
+        if(new SharedPreferenceManager(getApplicationContext()).isFirstTimeLaunch()){
+            Intent intent = new Intent(SplashActivity.this,SignUpActivity.class);
+            startActivity(intent);
+        }else{
+            new SharedPreferenceManager(getApplicationContext()).setFirstTimeLaunch(true);
+            Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+            startActivity(intent);
+        }
     }
 }
