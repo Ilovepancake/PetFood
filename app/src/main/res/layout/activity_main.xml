@@ -11,96 +11,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_gravity="bottom"
-        android:id="@+id/bottomNavLayouts"
-        android:visibility="visible"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/logoutBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_action_logout"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/logoutText"
-                android:text="Logout."
-                android:textSize="11sp"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/settingsBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_action_settings"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/settingsText"
-                android:text="Settings."
-                android:textSize="11sp"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/cartBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_action_cart"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/cartText"
-                android:text="Cart."
-                android:textSize="10sp"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="16dp"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/checkoutBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_action_checkout"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/checkoutText"
-                android:text="Checkout."
-                android:textSize="11sp"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
         android:layout_gravity="top"
         android:id="@+id/searchFoodLayout"
         android:visibility="visible"
@@ -199,6 +109,112 @@
             android:text="@string/loadingMessage"
             android:textSize="10sp"
             android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:id="@+id/viewPagerLinear"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="bottom"
+            android:id="@+id/bottomNavLayouts"
+            android:visibility="visible"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/logoutBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_action_logout"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/logoutText"
+                    android:text="Logout."
+                    android:textSize="11sp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/settingsBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_action_settings"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/settingsText"
+                    android:text="Settings."
+                    android:textSize="11sp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/cartBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_action_cart"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/cartText"
+                    android:text="Cart."
+                    android:textSize="10sp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/checkoutBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_action_checkout"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/checkoutText"
+                    android:text="Checkout."
+                    android:textSize="11sp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vpPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v4.view.ViewPager>
+
+
     </LinearLayout>
 
 

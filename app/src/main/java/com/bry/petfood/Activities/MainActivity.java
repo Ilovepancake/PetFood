@@ -1,10 +1,13 @@
 package com.bry.petfood.Activities;
 
 import android.content.Context;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -31,7 +34,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActitivy";
     private Context mContext;
-    @Bind(R.id.bottomNavLayouts) LinearLayout mBottomNavLayouts;
+
+    @Bind(R.id.viewPagerLinear) LinearLayout mCollapsableBottomNavLayout;
     @Bind(R.id.logoutBtn) ImageButton mLogoutBtn;
     @Bind(R.id.settingsBtn) ImageButton mSettingsBtn;
     @Bind(R.id.cartBtn) ImageButton mCartBtn;
@@ -47,7 +51,20 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.cataloguePlaceHolderView)PlaceHolderView cataloguePlaceHolderView;
     @Bind(R.id.loadingLayout) LinearLayout mLoadingLayout;
 
-    private final String[] COUNTRIES = new String[] {"belgium", "france", "italy", "germany", "spain"};
+    private final String[] COUNTRIES = new String[] {"dog", "cat", "rabbit", "hamster", "parrot"};
+
+    private final int collapsedMargin = 1100;
+    private final int unCollapsedMargin = 1;
+    private boolean isCardCollapsed = true;
+    private boolean mIsScrolling = false;
+    private GestureDetector mDetector;
+    private int _yDelta;
+    private boolean isInTransition = false;
+    private final int normalDuration = 120;
+    private List<Integer> RawList = new ArrayList<>();
+    private ViewPager vpPager;
+    private FragmentPagerAdapter adapterViewPager;
+    private LinearLayout viewPagerLinear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadTestItems();
         seTopSearchBarStuff();
-
+        loadBottomViews();
     }
 
     private void seTopSearchBarStuff() {
@@ -97,10 +114,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void loadBottomViews() {
+        mCollapsableBottomNavLayout.setVisibility(View.VISIBLE);
+    }
+
+
     private void showLoadingLayoutNHideViews(){
         Log("Hiding views");
         mLoadingLayout.setVisibility(View.VISIBLE);
-        mBottomNavLayouts.setVisibility(View.INVISIBLE);
+        mCollapsableBottomNavLayout.setVisibility(View.INVISIBLE);
         mSearchFoodLayout.setVisibility(View.INVISIBLE);
         cataloguePlaceHolderView.setVisibility(View.INVISIBLE);
     }
@@ -108,14 +130,12 @@ public class MainActivity extends AppCompatActivity {
     private void hideLoadingLayoutNShowViews(){
         Log("Showing views");
         mLoadingLayout.setVisibility(View.INVISIBLE);
-        mBottomNavLayouts.setVisibility(View.VISIBLE);
+        mCollapsableBottomNavLayout.setVisibility(View.VISIBLE);
         mSearchFoodLayout.setVisibility(View.VISIBLE);
         cataloguePlaceHolderView.setVisibility(View.VISIBLE);
     }
 
-    private void Log(String message){
-        Log.d(TAG,message);
-    }
+
 
 
     private List<FoodItem> createTestItems(int numberOfItems){
@@ -127,5 +147,13 @@ public class MainActivity extends AppCompatActivity {
         }
         return myTestList;
     }
+
+
+
+    private void Log(String message){
+        Log.d(TAG,message);
+    }
+
+
 
 }
