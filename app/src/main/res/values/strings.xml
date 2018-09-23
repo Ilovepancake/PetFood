@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pet Food</string>
+    <string name="app_name">Pet Stop</string>
     <string name="loadingMessage">loading…</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
@@ -10,7 +10,6 @@
     <string name="signInText">"Login."</string>
     <string name="passwordHintText">"Password."</string>
     <string name="confirmPasswordText">"Confirm Password."</string>
-
 
 
     <string name="emailText">"Email (you@example.com)."</string>
