@@ -29,7 +29,7 @@ public class FoodItemCard {
 
     @Resolve
     private void onResolved(){
-        mTitleTextView.setText(mFoodItem.getName());
+        mTitleTextView.setText("Food item --"+mFoodItem.getName());
     }
 
 }
