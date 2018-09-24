@@ -1,2 +1,3 @@
 # PetFood
-Contains my android pet food retail app for retail and wholesale
+Contains my android pet food retail app
+Transform your pet into your favourite character
