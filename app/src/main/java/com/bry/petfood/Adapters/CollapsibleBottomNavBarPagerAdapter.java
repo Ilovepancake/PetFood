@@ -1,5 +1,6 @@
 package com.bry.petfood.Adapters;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,9 +11,11 @@ import com.bry.petfood.Fragments.PurchaseHistoryFragment;
 
 public class CollapsibleBottomNavBarPagerAdapter extends FragmentPagerAdapter {
     private final int NUM_ITEMS = 3;
+    private Context mContext;
 
-    public CollapsibleBottomNavBarPagerAdapter(FragmentManager fragmentManager) {
+    public CollapsibleBottomNavBarPagerAdapter(FragmentManager fragmentManager,Context context) {
         super(fragmentManager);
+        this.mContext = context;
     }
 
     // Returns total number of pages
@@ -21,20 +24,28 @@ public class CollapsibleBottomNavBarPagerAdapter extends FragmentPagerAdapter {
         return NUM_ITEMS;
     }
 
+    @Override
+    public float getPageWidth (int position) {
+        return 0.93f;
+    }
+
     // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
         if(position == 0){
             PurchaseHistoryFragment frag = new PurchaseHistoryFragment();
             frag.setPos(position);
+            frag.setContext(mContext);
             return frag;
         }else if(position == 1){
             CartFragment frag = new CartFragment();
             frag.setPos(position);
+            frag.setContext(mContext);
             return frag;
         }else{
             CompareFragment frag = new CompareFragment();
             frag.setPos(position);
+            frag.setContext(mContext);
             return frag;
         }
 

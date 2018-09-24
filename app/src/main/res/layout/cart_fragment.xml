@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         app:cardCornerRadius="15dp"
         app:cardPreventCornerOverlap="false"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:id="@+id/card"
         app:cardElevation="3dp"
         android:visibility="visible"
@@ -21,17 +21,28 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:id="@+id/Window"
-            android:layout_height="match_parent">
+            android:orientation="horizontal"
+            android:id="@+id/topSettingsView"
+            android:layout_height="50dp">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="boi"
+                android:text="My Cart."
+                android:textSize="22sp"
                 android:layout_centerInParent="true"
-                android:id="@+id/Window1Txt"
-                android:layout_height="wrap_content" />
+                android:gravity="center"
+                android:textColor="@color/colorPrimaryLight"
+                android:layout_height="match_parent" />
 
         </RelativeLayout>
+
+        <com.mindorks.placeholderview.PlaceHolderView
+            android:id="@+id/cartPlaceHolderView"
+            android:layout_width="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="wrap_content"/>
 
 
     </android.support.v7.widget.CardView>

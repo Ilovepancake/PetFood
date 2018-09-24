@@ -118,7 +118,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:id="@+id/viewPagerLinear"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@color/white"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -154,6 +154,15 @@
                     android:layout_marginTop="40dp"
                     android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginLeft="25dp"
+                    android:id="@+id/HistoryDot"
+                    android:visibility="invisible"
+                    android:layout_marginTop="56dp"
+                    android:layout_height="2dp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -174,6 +183,15 @@
                     android:layout_marginTop="40dp"
                     android:layout_marginLeft="16dp"
                     android:layout_height="wrap_content" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginLeft="25dp"
+                    android:id="@+id/CartDot"
+                    android:visibility="invisible"
+                    android:layout_marginTop="56dp"
+                    android:layout_height="2dp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -194,6 +212,15 @@
                     android:layout_marginTop="40dp"
                     android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginLeft="25dp"
+                    android:id="@+id/CompareDot"
+                    android:visibility="invisible"
+                    android:layout_marginTop="56dp"
+                    android:layout_height="2dp"/>
             </RelativeLayout>
 
         </LinearLayout>
@@ -201,12 +228,308 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/vpPager"
             android:layout_width="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp"
             android:layout_height="wrap_content">
         </android.support.v4.view.ViewPager>
 
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/settingsViewLayout"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardCornerRadius="15dp"
+            app:cardPreventCornerOverlap="false"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/cardSettings"
+            app:cardElevation="3dp"
+            android:visibility="visible"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="70dp"
+                android:id="@+id/SettingsTouchView"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/topSettingsView"
+                android:layout_height="50dp">
+
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:background="@drawable/ic_action_back"
+                    android:id="@+id/backBtnForSettings"
+                    android:layout_height="50dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Settings."
+                    android:textSize="22sp"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:id="@+id/WindowR"
+                android:layout_marginTop="50dp"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="App settings"
+                        android:textColor="@color/colorPrimaryLight"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="17sp"
+                        android:layout_height="match_parent" />
+
+                    <!--Dark theme view-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="7dp"
+                        android:id="@+id/darkThemeLayout"
+                        android:paddingBottom="7dp"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content">
+
+                            <Switch
+                                android:layout_width="45dp"
+                                android:id="@+id/DarkModeSwitch"
+                                android:layout_height="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:textSize="15sp"
+                                android:layout_marginLeft="20dp"
+                                android:text="Dark theme."
+                                android:gravity="center"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:background="@color/grey"
+                            android:layout_height="1dp"/>
+
+                    </LinearLayout>
+
+
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Account settings"
+                        android:textColor="@color/colorPrimaryLight"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="17sp"
+                        android:layout_marginTop="30dp"
+                        android:layout_height="match_parent" />
+
+                    <!--User account-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:layout_marginTop="1dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="7dp"
+                        android:id="@+id/AccountBtn"
+                        android:paddingBottom="7dp"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content">
+
+                            <ImageButton
+                                android:layout_width="40dp"
+                                android:background="@drawable/ic_action_user"
+                                android:layout_height="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:textSize="15sp"
+                                android:layout_marginLeft="20dp"
+                                android:text="Your Account."
+                                android:gravity="center"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:background="@color/grey"
+                            android:layout_height="1dp"/>
+
+                    </LinearLayout>
+
+                    <!--Logout view-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="7dp"
+                        android:id="@+id/LogoutLayout"
+                        android:paddingBottom="7dp"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content">
+
+                            <ImageButton
+                                android:layout_width="40dp"
+                                android:background="@drawable/ic_action_logout"
+                                android:layout_height="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:textSize="15sp"
+                                android:layout_marginLeft="20dp"
+                                android:text="Logout."
+                                android:gravity="center"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:background="@color/grey"
+                            android:layout_marginTop="5dp"
+                            android:layout_height="1dp"/>
+
+                    </LinearLayout>
+
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Others"
+                        android:textColor="@color/colorPrimaryLight"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="17sp"
+                        android:layout_marginTop="30dp"
+                        android:layout_height="match_parent" />
+
+
+                    <!--Feedback-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:layout_marginTop="1dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="7dp"
+                        android:id="@+id/FeedbackView"
+                        android:paddingBottom="7dp"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content">
+
+                            <ImageButton
+                                android:layout_width="40dp"
+                                android:background="@drawable/ic_action_feedback"
+                                android:layout_height="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:textSize="15sp"
+                                android:layout_marginLeft="20dp"
+                                android:text="Feedback."
+                                android:gravity="center"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:background="@color/grey"
+                            android:layout_height="1dp"/>
+
+                    </LinearLayout>
+
+                    <!--App version-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:layout_marginTop="1dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="7dp"
+                        android:id="@+id/VersiontLayout"
+                        android:paddingBottom="7dp"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content">
+
+                            <ImageButton
+                                android:layout_width="40dp"
+                                android:background="@drawable/ic_action_version"
+                                android:layout_height="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:textSize="15sp"
+                                android:layout_marginLeft="20dp"
+                                android:text="App Version:  v1.0"
+                                android:gravity="center"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:background="@color/grey"
+                            android:layout_height="1dp"/>
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

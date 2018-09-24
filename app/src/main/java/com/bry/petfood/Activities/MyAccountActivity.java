@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.bry.petfood.R;
 
-public class CartActivity extends AppCompatActivity {
+public class MyAccountActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
