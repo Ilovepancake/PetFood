@@ -45,7 +45,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="paddingPercent" value="40" />
+                                                <entry key="paddingPercent" value="30" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -55,8 +55,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="imageAsset" value="C:\Users\bryon\Desktop\frostbite\images\version.jpg" />
-                                      <entry key="outputName" value="ic_action_feedback" />
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="C:\Users\bryon\Desktop\frostbite\images\edit.png" />
+                                      <entry key="outputName" value="ic_action_list_item" />
                                       <entry key="themeColor" value="f2990d" />
                                     </map>
                                   </option>

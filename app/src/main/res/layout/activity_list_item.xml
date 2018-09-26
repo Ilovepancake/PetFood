@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.ListItemActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/topSettingsView"
+        android:layout_height="50dp">
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:background="@drawable/ic_action_back"
+            android:id="@+id/backBtnForList"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="List Item."
+            android:textSize="22sp"
+            android:textColor="@color/colorPrimaryLight"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/PickImageView"
+        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.GridLayout
+            android:layout_width="match_parent"
+            app:rowCount="2"
+            app:columnCount="3"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+
+        </android.support.v7.widget.GridLayout>
+
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

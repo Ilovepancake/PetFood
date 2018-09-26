@@ -8,9 +8,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.bry.petfood.Fragments.CartFragment;
 import com.bry.petfood.Fragments.CompareFragment;
 import com.bry.petfood.Fragments.PurchaseHistoryFragment;
+import com.bry.petfood.Fragments.UserAccountFragment;
 
 public class CollapsibleBottomNavBarPagerAdapter extends FragmentPagerAdapter {
-    private final int NUM_ITEMS = 3;
+    private final int NUM_ITEMS = 4;
     private Context mContext;
 
     public CollapsibleBottomNavBarPagerAdapter(FragmentManager fragmentManager,Context context) {
@@ -26,18 +27,24 @@ public class CollapsibleBottomNavBarPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public float getPageWidth (int position) {
-        return 0.93f;
+        return super.getPageWidth(position);
+//        return 0.93f;
     }
 
     // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
         if(position == 0){
-            PurchaseHistoryFragment frag = new PurchaseHistoryFragment();
+            UserAccountFragment frag = new UserAccountFragment();
             frag.setPos(position);
             frag.setContext(mContext);
             return frag;
         }else if(position == 1){
+            PurchaseHistoryFragment frag = new PurchaseHistoryFragment();
+            frag.setPos(position);
+            frag.setContext(mContext);
+            return frag;
+        }else if(position == 2){
             CartFragment frag = new CartFragment();
             frag.setPos(position);
             frag.setContext(mContext);
