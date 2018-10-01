@@ -6,4 +6,5 @@ public class Constants {
     public static final String USERS = "Users";
     public static final String LOADED_USER_DATA_SUCCESSFULLY = "LOADED_USER_DATA_SUCCESSFULLY";
     public static final String FAILED_TO_LOAD_USER_DATA = "FAILED_TO_LOAD_USER_DATA";
+    public static final String PASSWORD_THING = "PASSWORD_THING";
 }

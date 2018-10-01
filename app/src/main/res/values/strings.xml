@@ -24,4 +24,22 @@
     <string name="noInternetForLoadAds">You need an internet connection to load the ads.</string>
     <string name="settingUpMessage2">Setting up...</string>
     <string name="signUpPasswordNote">Note: put a secure password that you can remember.</string>
+
+    <string name="confirmEmail">"We've sent you an email for verification. The app will automatically detect that you're verified and you will be able to access and use the app."</string>
+    <string name="reconfirmEmail">"To continue, you need to first verify your email address. The app will automatically detect that you're verified and you'll be able to use the app."</string>
+
+    <string name="foodName">Food Item Name.</string>
+    <string name="quantityAmm">Quantity.</string>
+    <string name="describeItem">Describe your food item.</string>
+    <string name="retailPrice">Items price(in Ksh).</string>
+    <string name="category">Category</string>
+
+
+    <string name="itemtype">Food Category</string>
+    <string name="itemtype1">Guinea Pig</string>
+    <string name="itemtype2">Hamster</string>
+    <string name="itemtype3">Dog</string>
+    <string name="itemtype4">Rabbit</string>
+    <string name="itemtype5">Cat</string>
 </resources>
+

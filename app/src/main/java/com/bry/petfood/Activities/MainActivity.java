@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.CompareDot) View mCompareDot;
     @Bind(R.id.UserAccountDot) View mUserAccountDot;
     @Bind(R.id.bottomTouchView)View mBottomTouchView;
+    @Bind(R.id.bottomNavLayouts) LinearLayout mBottomNavLayouts;
+    @Bind(R.id.viewPagerLinear) LinearLayout mViewPagerLinear;
 
     @Bind(R.id.settingsViewLayout) LinearLayout mSettingsViewLayout;
     @Bind(R.id.topSettingsView) RelativeLayout mTopSettingsView;
@@ -424,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
                if ((Y - _yDelta) < unCollapsedMargin) {
                    updateUpPosition(unCollapsedMargin, 0);
                } else if ((Y - _yDelta) > collapsedMargin) {
-                   updateUpPosition(collapsedMargin, 0);
+//                   updateUpPosition(collapsedMargin, 0);
                } else {
                    updateUpPosition((Y - _yDelta), 0);
                }
@@ -460,14 +463,17 @@ public class MainActivity extends AppCompatActivity {
             if(isSettingsCardCollapsed) {
                 if (UpScore < DownScore) {
                     isCardCollapsed = false;
-                    if (mCollapsibleBottomNavLayout.getTranslationY() != unCollapsedMargin)
-                        if(mCollapsibleBottomNavLayout.getTranslationY()>150)mCollapsibleBottomNavLayout.setTranslationY(mCollapsibleBottomNavLayout.getTranslationY() - 150);
-                    updateUpPosition(unCollapsedMargin, normalDuration);
+                    if (mCollapsibleBottomNavLayout.getTranslationY() > unCollapsedMargin) {
+                        if (mCollapsibleBottomNavLayout.getTranslationY() > 300)
+                            mCollapsibleBottomNavLayout.setTranslationY(mCollapsibleBottomNavLayout.getTranslationY() - 150);
+                        updateUpPosition(unCollapsedMargin, normalDuration);
+                    }
                 } else {
                     isCardCollapsed = true;
-                    if (mCollapsibleBottomNavLayout.getTranslationY() != collapsedMargin)
+                    if (mCollapsibleBottomNavLayout.getTranslationY() > collapsedMargin) {
                         mCollapsibleBottomNavLayout.setTranslationY(mCollapsibleBottomNavLayout.getTranslationY() + 150);
-                    updateUpPosition(collapsedMargin, normalDuration);
+                        updateUpPosition(collapsedMargin, normalDuration);
+                    }
                 }
             }
 
@@ -486,7 +492,11 @@ public class MainActivity extends AppCompatActivity {
             mCollapsibleBottomNavLayout.setTranslationY(collapsedMargin);
             isInTransition = true;
             onBottomLayoutExpand();
+//            mBottomNavLayouts.setVisibility(View.VISIBLE);
+//            mViewPagerLinear.setBackgroundColor(Color.TRANSPARENT);
         }
+
+        Log.d("TAG","updateUpPosition y_pos: "+y_pos);
 
         mCollapsibleBottomNavLayout.animate().setDuration(duration).translationY(y_pos)
                 .setInterpolator(new LinearOutSlowInInterpolator()).setListener(new Animator.AnimatorListener() {
@@ -518,6 +528,37 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        int rounded = (((y_pos/1100) + 99) / 100 );
+        Log.d("TAG","rounded: "+rounded);
+
+//        mBottomNavLayouts.animate().alpha((y_pos/1100)*1f).setDuration(duration).setListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animator) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animator) {
+//                if(isCardCollapsed && !isInTransition){
+//                    mBottomNavLayouts.setVisibility(View.VISIBLE);
+////                    mViewPagerLinear.setBackgroundColor(Color.WHITE);
+//                }else if(!isCardCollapsed && !isInTransition){
+//                    mBottomNavLayouts.setVisibility(View.INVISIBLE);
+////                    mViewPagerLinear.setBackgroundColor(Color.TRANSPARENT);
+//                }
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animator) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animator) {
+//
+//            }
+//        });
     }
 
     private void onBottomLayoutCollapse(){
@@ -526,10 +567,12 @@ public class MainActivity extends AppCompatActivity {
         mCartDot.setVisibility(View.INVISIBLE);
         mCompareDot.setVisibility(View.INVISIBLE);
         RawList.clear();
+        mRightTouchView.setVisibility(View.VISIBLE);
     }
 
     private void onBottomLayoutExpand(){
         RawList.clear();
+        mRightTouchView.setVisibility(View.GONE);
     }
 
     private void setCompleteLeftView(){
@@ -835,7 +878,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showUserAccount(){
-        Intent intent = new Intent(MainActivity.this,MyAccountActivity.class);
+        Intent intent = new Intent(MainActivity.this,ListItemActivity.class);
         startActivity(intent);
     }
 
@@ -866,8 +909,6 @@ public class MainActivity extends AppCompatActivity {
     private void loadFeedBackFragment(){
         Toast.makeText(mContext,"Feedback",Toast.LENGTH_SHORT).show();
     }
-
-
 
 
 

@@ -10,4 +10,8 @@ public class Variables {
     public static void setPassword(String pass){
         password = pass;
     }
+
+    public static String getPassword(){
+        return password;
+    }
 }

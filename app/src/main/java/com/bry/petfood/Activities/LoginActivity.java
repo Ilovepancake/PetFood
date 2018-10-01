@@ -1,11 +1,13 @@
 package com.bry.petfood.Activities;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -73,6 +75,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean isActivityVisible;
     private boolean didUserJustLogInManually = false;
     private boolean isShowingPromptForeula = false;
+
+    Handler h = new Handler();
+    Runnable r;
 
 
     @Override
@@ -207,7 +212,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG,"Finished loading user data");
             hasEverythingLoaded = true;
-            startMainActivity();
+            checkIfUserIsAuthentic();
         }
     };
 
@@ -308,6 +313,68 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void startLoadingUserData(){
         DatabaseManager dbMan = new DatabaseManager(mContext);
         dbMan.loadUserData();
+    }
+
+
+
+    private void checkIfUserIsAuthentic(){
+        if(checkIfEmailIsVerified()){
+            startMainActivity();
+        }else{
+            openNotVerifiedPrompt();
+        }
+    }
+
+    private void openNotVerifiedPrompt() {
+        final Dialog d = new Dialog(this);
+        d.setTitle("Email.");
+        d.setContentView(R.layout.dialog_reverify_email);
+        Button b1 = d.findViewById(R.id.okBtn);
+        final TextView hasVerifiedText = d.findViewById(R.id.hasVerifiedText);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendVerificationEmail();
+            }
+        });
+
+        d.setCancelable(false);
+        d.show();
+
+        r = new Runnable() {
+            @Override
+            public void run() {
+                if(checkIfEmailIsVerified()){
+                    hasVerifiedText.setText("Email verified.");
+                    h.removeCallbacks(r);
+                    d.dismiss();
+                    startMainActivity();
+                }else{
+                    hasVerifiedText.setText("Email not verified.");
+                }
+                h.postDelayed(r, 1000);
+            }
+        };
+        h.postDelayed(r, 1000);
+
+    }
+
+    private boolean checkIfEmailIsVerified() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.reload();
+        return user.isEmailVerified();
+    }
+
+    private void sendVerificationEmail() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(mContext,"Email sent.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
