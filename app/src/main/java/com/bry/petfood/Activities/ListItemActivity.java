@@ -1,10 +1,14 @@
 package com.bry.petfood.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -14,11 +18,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bry.petfood.Constants;
+import com.bry.petfood.Models.FoodItem;
 import com.bry.petfood.R;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,6 +54,8 @@ public class ListItemActivity extends AppCompatActivity implements View.OnClickL
     private Context mContext;
     private Bitmap imageBitmap;
 
+    private ProgressDialog mAuthProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +63,7 @@ public class ListItemActivity extends AppCompatActivity implements View.OnClickL
         ButterKnife.bind(this);
         mContext = this.getApplicationContext();
         setListeners();
+        createProgressDialog();
     }
 
     private void setListeners() {
@@ -67,10 +82,6 @@ public class ListItemActivity extends AppCompatActivity implements View.OnClickL
         }else if(v.equals(mUploadBtn)){
             uploadItem();
         }
-    }
-
-    private void uploadItem() {
-
     }
 
     private void openImagePicker() {
@@ -134,6 +145,127 @@ public class ListItemActivity extends AppCompatActivity implements View.OnClickL
         }
 
         return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+
+    private void uploadItem() {
+        String name = mNameEditText.getText().toString().trim();
+        String desc = mDescriptionEditText.getText().toString().trim();
+        Bitmap bm = imageBitmap;
+        String quantityAvailable = mQuantityEditText.getText().toString().trim();
+        String price = mPriceEditText.getText().toString().trim();
+        String category = SpinnerFeedbackType.getSelectedItem().toString();
+
+        if(isValidName(name) && isValidDescription(desc) && isImageValid(bm) && isValidQuantity(quantityAvailable) && isValidPrice(price)){
+            showProg();
+            String encodedImageToUpload = encodeBitmapForFirebaseStorage(bm);
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            DatabaseReference adRef = FirebaseDatabase.getInstance().getReference(Constants.LISTED_ITEMS);
+            DatabaseReference pushRef = adRef.push();
+            String pushId = pushRef.getKey();
+
+            DatabaseReference adRef2 = FirebaseDatabase.getInstance().getReference(Constants.USERS)
+                    .child(uid).child(Constants.MY_LISTED_ITEMS);
+            DatabaseReference pushRef2 = adRef2.push();
+            pushRef2.setValue(pushId);
+
+            FoodItem item = new FoodItem(name,pushId,desc,Double.parseDouble(quantityAvailable),Double.parseDouble(price),category);
+            pushRef.setValue(item);
+
+            DatabaseReference adRef3 = FirebaseDatabase.getInstance().getReference(Constants.LISTED_ITEMS_IMAGES)
+                    .child(pushId).child(Constants.IMG1);
+            adRef3.setValue(encodedImageToUpload).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    hideProg();
+                    Toast.makeText(mContext,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+        }
+
+    }
+
+    private boolean isValidName(String name){
+        if(name.equals("")){
+            mNameEditText.setError("A name is required");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isValidDescription(String desc){
+        if(desc.equals("")){
+            mDescriptionEditText.setError("Details are required");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isImageValid(Bitmap image){
+        if(image==null){
+            Toast.makeText(mContext,"An image is required",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidQuantity(String quant){
+        try{
+            Integer x = Integer.parseInt(quant);
+            if(x<1){
+                mQuantityEditText.setError("Thats not valid");
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            mQuantityEditText.setError("Thats not a number");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isValidPrice(String price){
+        try{
+            Integer x = Integer.parseInt(price);
+            if(x<1){
+                mQuantityEditText.setError("That's not valid");
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            mQuantityEditText.setError("Thats not a number");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private boolean isNetworkConnected(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return (netInfo != null && netInfo.isConnected());
+    }
+
+
+    private void createProgressDialog(){
+        mAuthProgressDialog = new ProgressDialog(this);
+        mAuthProgressDialog.setTitle(R.string.app_name);
+        mAuthProgressDialog.setMessage("Uploading...");
+        mAuthProgressDialog.setCancelable(false);
+    }
+
+    private void showProg(){
+        mAuthProgressDialog.show();
+    }
+
+    private void hideProg(){
+        mAuthProgressDialog.dismiss();
     }
 
 }

@@ -91,21 +91,18 @@
         </LinearLayout>
 
         <EditText
-            android:id="@+id/DescriptionEditText"
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:hint="Describe your product."
+            android:inputType="textMultiLine"
+            android:id="@+id/DescriptionEditText"
+            android:layout_marginTop="5dp"
+            android:lines="4"
+            android:gravity="bottom"
+            android:textSize="16sp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@android:color/white"
-            android:hint="@string/describeItem"
-            android:padding="10dp"
-            android:ems="50"
-            android:gravity="top"
-            android:inputType="text"
-            android:textColor="@android:color/black"
+            android:background="@color/white"
             android:textColorHint="@color/colorAccent"
-            android:textSize="15sp" />
+            android:layout_height="260dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

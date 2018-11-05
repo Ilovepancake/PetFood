@@ -43,7 +43,7 @@ public class PurchaseHistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.purchase_history_fragment, container, false);
         mPurchaseHistoryPlaceHolderView =  view.findViewById(R.id.purchaseHistoryPlaceHolderView);
 
-        loadTestItems();
+//        loadTestItems();
         return view;
     }
 

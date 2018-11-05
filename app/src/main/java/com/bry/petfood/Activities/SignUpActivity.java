@@ -335,8 +335,11 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
         canRemoveCurrentUser = false;
         mProgressBarSignUp.setVisibility(View.GONE);
         mLoadingText.setVisibility(View.GONE);
-        Variables.user = user;
-        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        Variables.user = null;
+        if (FirebaseAuth.getInstance() != null) {
+            FirebaseAuth.getInstance().signOut();
+        }
+        Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

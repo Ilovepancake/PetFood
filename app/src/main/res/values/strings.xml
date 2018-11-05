@@ -34,6 +34,8 @@
     <string name="retailPrice">Items price(in Ksh).</string>
     <string name="category">Category</string>
 
+    <string name="needUserDetails">We also need a few more details from you before we can continue.</string>
+
 
     <string name="itemtype">Food Category</string>
     <string name="itemtype1">Guinea Pig</string>

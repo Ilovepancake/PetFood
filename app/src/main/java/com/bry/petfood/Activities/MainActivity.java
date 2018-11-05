@@ -2,18 +2,24 @@ package com.bry.petfood.Activities;
 
 import android.animation.Animator;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -21,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
@@ -33,12 +40,20 @@ import android.widget.Toast;
 
 import com.bry.petfood.Adapters.CollapsibleBottomNavBarPagerAdapter;
 import com.bry.petfood.Adapters.FoodItemCard;
+import com.bry.petfood.Constants;
+import com.bry.petfood.Fragments.FeedbackFragment;
+import com.bry.petfood.Fragments.FragmentModalBottomSheet;
 import com.bry.petfood.Models.FoodItem;
 import com.bry.petfood.R;
 import com.bry.petfood.Services.Utils;
 import com.bry.petfood.Variables;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import io.fabric.sdk.android.Fabric;
@@ -89,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.cataloguePlaceHolderView)PlaceHolderView cataloguePlaceHolderView;
     @Bind(R.id.loadingLayout) LinearLayout mLoadingLayout;
 
-    private final String[] COUNTRIES = new String[] {"dog", "cat", "rabbit", "hamster", "parrot"};
+    private final String[] COUNTRIES = new String[] {"Dog", "Cat", "Rabbit", "Hamster", "Guinea Pig"};
 
     private final int collapsedMargin = Utils.dpToPx(550);
     private final int unCollapsedMargin = Utils.dpToPx(1);
@@ -115,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
     private final int normalSettingsDuration = 320;
 
     private List<Integer> SettingsRawList = new ArrayList<>();
+    private List<FoodItem> allFoodItems = new ArrayList<>();
 
 
 
@@ -127,12 +143,21 @@ public class MainActivity extends AppCompatActivity {
 
         mContext = getApplicationContext();
 
-        loadTestItems();
+        loadItemsFromFirebase();
         seTopSearchBarStuff();
         addTouchListenerForSettingsOne();
         loadBottomViews();
         setClickListeners();
         settingsBtnListener();
+
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(mMessageReceiverForShowBottomSheet,new IntentFilter(Constants.SHOW_PAYOUT));
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mMessageReceiverForShowBottomSheet);
     }
 
 
@@ -154,15 +179,6 @@ public class MainActivity extends AppCompatActivity {
         cataloguePlaceHolderView.setVisibility(View.VISIBLE);
     }
 
-    private List<FoodItem> createTestItems(int numberOfItems){
-        List<FoodItem> myTestList = new ArrayList<>();
-        for(int i = 0;i<numberOfItems; i++){
-            FoodItem myFood = new FoodItem();
-            myFood.setName("Food-item "+i);
-            myTestList.add(myFood);
-        }
-        return myTestList;
-    }
 
     private void Log(String message){
         Log.d(TAG,message);
@@ -237,6 +253,30 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.select_dialog_item, COUNTRIES);
         searchEditText.setThreshold(1);
         searchEditText.setAdapter(adapter);
+        searchEditText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        mSearchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterAndAddItems(searchEditText.getText().toString().trim());
+                View view = MainActivity.this.getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            }
+        });
         searchEditText.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -245,8 +285,11 @@ public class MainActivity extends AppCompatActivity {
                         (actionId == EditorInfo.IME_ACTION_NEXT) ||
                         (actionId == EditorInfo.IME_ACTION_GO)) {
                     Log("Enter pressed");
+                    if(searchEditText.getText().toString().trim().equals("")){
+                        unfilterEverything();
+                    }else filterAndAddItems(searchEditText.getText().toString().trim());
                     searchEditText.setText("");
-                    Toast.makeText(mContext,"SearchedItem"+v.getText().toString(),Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext,"SearchedItem"+v.getText().toString(),Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -259,16 +302,100 @@ public class MainActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
+
+
     }
 
-    private void loadTestItems() {
-        List<FoodItem> testItems = createTestItems(5);
-        for(FoodItem item:testItems){
-            cataloguePlaceHolderView.addView(new FoodItemCard(mContext,cataloguePlaceHolderView,item));
+    private void unfilterEverything(){
+        cataloguePlaceHolderView.removeAllViews();
+        loadFoodItemsIntoViews();
+    }
+
+    private void filterAndAddItems(String phrase){
+        Log.d(TAG,"Filtering items");
+        cataloguePlaceHolderView.removeAllViews();
+        for(FoodItem item:allFoodItems){
+            if(item.getCategory().equals(phrase)){
+                cataloguePlaceHolderView.addView(new FoodItemCard(mContext,cataloguePlaceHolderView,item));
+            }
         }
     }
 
+    private void loadItemsFromFirebase() {
+        showLoadingLayoutNHideViews();
+        Log.d(TAG,"Loading items from firebase");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.LISTED_ITEMS);
+        Log.d(TAG,"Query set up: "+Constants.LISTED_ITEMS);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG,"Loaded datas: "+dataSnapshot.toString());
+                for(DataSnapshot snap:dataSnapshot.getChildren()){
+                    String category = snap.child("category").getValue(String.class);
+                    String description = snap.child("description").getValue(String.class);
+                    String name = snap.child("name").getValue(String.class);
+                    Double price = snap.child("price").getValue(Double.class);
+                    String pushId = snap.child("pushId").getValue(String.class);
+                    Double quantity = snap.child("quantityAvailable").getValue(Double.class);
 
+                    FoodItem item = new FoodItem(name,pushId,description,quantity,price,category);
+                    Log.d(TAG,"Adding item : "+item.getName());
+                    allFoodItems.add(item);
+                }
+                Log.d(TAG,"Done Loading items from firebase: "+allFoodItems.size()+" items found.");
+                loadFoodItemsImage();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private int iterator = 0;
+    private void loadFoodItemsImage(){
+        iterator = 0;
+        Log.d(TAG,"Loading items' images from firebase");
+        for(FoodItem item:allFoodItems){
+
+            DatabaseReference adRef3 = FirebaseDatabase.getInstance().getReference(Constants.LISTED_ITEMS_IMAGES)
+                    .child(item.getPushId()).child(Constants.IMG1);
+            Log.d(TAG,"Query set up: "+Constants.LISTED_ITEMS_IMAGES+" : "+item.getPushId()+" : "+Constants.IMG1);
+            adRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.e(TAG,"Loaded item image.");
+                    allFoodItems.get(iterator).setImage(dataSnapshot.getValue(String.class));
+                    iterator++;
+                    if(iterator==allFoodItems.size()){
+                        Log.d(TAG,"Done Loading items from firebase");
+                        processTheImages();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(TAG,"Error: "+databaseError.getMessage());
+                    Log.e(TAG,"Error: "+databaseError.getDetails());
+                }
+            });
+        }
+    }
+
+    private void processTheImages() {
+        Log.d(TAG,"Processint items' images.");
+        new LongOperationFI().execute("");
+    }
+
+    private void loadFoodItemsIntoViews(){
+        Log.d(TAG,"Loading items into views.");
+        for(FoodItem item:allFoodItems){
+            cataloguePlaceHolderView.addView(new FoodItemCard(mContext,cataloguePlaceHolderView,item));
+        }
+        hideLoadingLayoutNShowViews();
+    }
 
 
     private void loadBottomViews() {
@@ -280,22 +407,23 @@ public class MainActivity extends AppCompatActivity {
             // This method will be invoked when a new page becomes selected.
             @Override
             public void onPageSelected(int position) {
-                if(position==0){
-                    mUserAccountDot.setVisibility(View.VISIBLE);
-                    mHistoryDot.setVisibility(View.INVISIBLE);
-                    mCartDot.setVisibility(View.INVISIBLE);
-                    mCompareDot.setVisibility(View.INVISIBLE);
-                }else if(position == 1){
+//                if(position==0){
+//                    mUserAccountDot.setVisibility(View.VISIBLE);
+//                    mHistoryDot.setVisibility(View.INVISIBLE);
+//                    mCartDot.setVisibility(View.INVISIBLE);
+//                    mCompareDot.setVisibility(View.INVISIBLE);
+//                }else
+                    if(position == 0){
                     mUserAccountDot.setVisibility(View.INVISIBLE);
                     mHistoryDot.setVisibility(View.VISIBLE);
                     mCartDot.setVisibility(View.INVISIBLE);
                     mCompareDot.setVisibility(View.INVISIBLE);
-                }else if(position == 2){
+                }else if(position == 1){
                     mUserAccountDot.setVisibility(View.INVISIBLE);
                     mHistoryDot.setVisibility(View.INVISIBLE);
                     mCartDot.setVisibility(View.VISIBLE);
                     mCompareDot.setVisibility(View.INVISIBLE);
-                }else if(position == 3){
+                }else if(position == 2){
                     mUserAccountDot.setVisibility(View.INVISIBLE);
                     mHistoryDot.setVisibility(View.INVISIBLE);
                     mCartDot.setVisibility(View.INVISIBLE);
@@ -392,8 +520,9 @@ public class MainActivity extends AppCompatActivity {
             RawList.clear();
 
             if(isCardCollapsed) {
-                if (X < 180) setCompleteLeftView();
-                else if (X < 380) setLeftView();
+//                if (X < 180) setCompleteLeftView();
+//                else
+                    if (X < 380) setLeftView();
                 else if(X<580)setCentreView();
                 else setRightView();
             }
@@ -907,9 +1036,70 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFeedBackFragment(){
-        Toast.makeText(mContext,"Feedback",Toast.LENGTH_SHORT).show();
+        FragmentManager fm = getFragmentManager();
+        FeedbackFragment reportDialogFragment = new FeedbackFragment();
+        reportDialogFragment.setMenuVisibility(false);
+        reportDialogFragment.show(fm, "Feedback.");
+        reportDialogFragment.setfragContext(mContext);
     }
 
+
+    private Bitmap decodeFromFirebaseBase64(String image) {
+        byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
+        Bitmap bitm = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+//        return getResizedBitmap(bitm,1200);
+        return bitm;
+    }
+
+    private void setImage(FoodItem item) {
+        try {
+            Bitmap bs = decodeFromFirebaseBase64(item.getImage());
+            item.setImageBitmap(bs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class LongOperationFI extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try{
+                for(FoodItem item:allFoodItems){
+                    setImage(item);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return "executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.d(TAG,"Done Processing items' images from firebase");
+            loadFoodItemsIntoViews();
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+    }
+
+
+    BroadcastReceiver mMessageReceiverForShowBottomSheet = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            openBottomSheet();
+        }
+    };
+
+    private void openBottomSheet(){
+      Intent intent = new Intent(MainActivity.this,CompletePaymentActivity.class);
+      startActivity(intent);
+    }
 
 
 }

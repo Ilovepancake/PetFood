@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activities.MainActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".Activities.MyAccountActivity" />
         <activity
             android:name=".Activities.SettingsActivity"
@@ -33,7 +33,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.ListItemActivity"></activity>
+        <activity android:name=".Activities.ListItemActivity" />
+        <activity android:name=".Fragments.checkout" />
+        <activity android:name=".Activities.CompletePaymentActivity"></activity>
     </application>
 
 </manifest>

@@ -11,7 +11,7 @@ import com.bry.petfood.Fragments.PurchaseHistoryFragment;
 import com.bry.petfood.Fragments.UserAccountFragment;
 
 public class CollapsibleBottomNavBarPagerAdapter extends FragmentPagerAdapter {
-    private final int NUM_ITEMS = 4;
+    private final int NUM_ITEMS = 3;
     private Context mContext;
 
     public CollapsibleBottomNavBarPagerAdapter(FragmentManager fragmentManager,Context context) {
@@ -34,17 +34,18 @@ public class CollapsibleBottomNavBarPagerAdapter extends FragmentPagerAdapter {
     // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
-        if(position == 0){
-            UserAccountFragment frag = new UserAccountFragment();
-            frag.setPos(position);
-            frag.setContext(mContext);
-            return frag;
-        }else if(position == 1){
+//        if(position == 0){
+//            UserAccountFragment frag = new UserAccountFragment();
+//            frag.setPos(position);
+//            frag.setContext(mContext);
+//            return frag;
+//        }else
+            if(position == 0){
             PurchaseHistoryFragment frag = new PurchaseHistoryFragment();
             frag.setPos(position);
             frag.setContext(mContext);
             return frag;
-        }else if(position == 2){
+        }else if(position == 1){
             CartFragment frag = new CartFragment();
             frag.setPos(position);
             frag.setContext(mContext);

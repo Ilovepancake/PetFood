@@ -1,17 +1,27 @@
 package com.bry.petfood.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bry.petfood.Adapters.FoodItemCard;
+import com.bry.petfood.Adapters.FoodItemInCompare;
+import com.bry.petfood.Constants;
 import com.bry.petfood.Models.FoodItem;
 import com.bry.petfood.R;
+import com.bry.petfood.Variables;
 import com.mindorks.placeholderview.PlaceHolderView;
+import com.mindorks.placeholderview.annotations.Layout;
+import com.mindorks.placeholderview.annotations.NonReusable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +41,8 @@ public class CompareFragment extends Fragment {
 
     public void setContext(Context context){
         this.mContext = context;
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(mMessageReceiverForAddItemToCart,new IntentFilter(Constants.ADD_ITEM_COMPARE_INTENT));
+
     }
 
     public void setPos(int Pos){
@@ -44,14 +56,15 @@ public class CompareFragment extends Fragment {
         View view = inflater.inflate(R.layout.compare_fragment, container, false);
         mComparePlaceHolderView =  view.findViewById(R.id.comparePlaceHolderView);
 
-        loadTestItems();
+//        loadTestItems();
+
         return view;
     }
 
     private void loadTestItems() {
         List<FoodItem> testItems = createTestItems(5);
         for(FoodItem item:testItems){
-            mComparePlaceHolderView.addView(new FoodItemCard(mContext,mComparePlaceHolderView,item));
+            mComparePlaceHolderView.addView(new FoodItemInCompare(mContext,mComparePlaceHolderView,item));
         }
     }
 
@@ -64,6 +77,20 @@ public class CompareFragment extends Fragment {
         }
         return myTestList;
     }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mMessageReceiverForAddItemToCart);
+    }
+
+    BroadcastReceiver mMessageReceiverForAddItemToCart = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            Toast.makeText(mContext,"Received message to add to compare",Toast.LENGTH_SHORT).show();
+            mComparePlaceHolderView.addView(new FoodItemInCompare(mContext,mComparePlaceHolderView, Variables.itemToBeAddedToCart));
+        }
+    };
 
 
 }
